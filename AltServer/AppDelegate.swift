@@ -11,7 +11,7 @@ import UserNotifications
 
 import AltSign
 
-import LaunchAtLogin
+//import LaunchAtLogin
 import STPrivilegedTask
 
 enum PluginError: LocalizedError
@@ -48,6 +48,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     private weak var authenticationAppleIDTextField: NSTextField?
     private weak var authenticationPasswordTextField: NSSecureTextField?
+    private weak var customUrlTextField: NSTextField?
+    private weak var jailbreakPicker: NSPopUpButton?
     
     private var isMailPluginInstalled: Bool {
         let isMailPluginInstalled = FileManager.default.fileExists(atPath: pluginURL.path)
@@ -103,8 +105,8 @@ private extension AppDelegate
         
         self.connectedDevices = ALTDeviceManager.shared.connectedDevices
         
-        self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
-        self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
+//        self.launchAtLoginMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
+//        self.launchAtLoginMenuItem.action = #selector(AppDelegate.toggleLaunchAtLogin(_:))
         
         if FileManager.default.fileExists(atPath: pluginURL.path)
         {
@@ -154,14 +156,29 @@ private extension AppDelegate
         passwordTextField.placeholderString = NSLocalizedString("Password", comment: "")
         self.authenticationPasswordTextField = passwordTextField
         
-        appleIDTextField.nextKeyView = passwordTextField
+        let customUrlTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: textFieldSize.width, height: textFieldSize.height))
+        customUrlTextField.delegate = self
+        customUrlTextField.translatesAutoresizingMaskIntoConstraints = false
+        customUrlTextField.placeholderString = NSLocalizedString("HTTPS IPA file URL", comment: "")
+        customUrlTextField.isHidden = true
+        self.customUrlTextField = customUrlTextField
         
-        let stackView = NSStackView(frame: NSRect(x: 0, y: 0, width: textFieldSize.width, height: textFieldSize.height * 2))
+        let jailbreakPicker = NSPopUpButton(frame: NSRect(x: 0, y: 0, width: 300, height: 22))
+        jailbreakPicker.addItems(withTitles: ["Unc0ver", "Chimera", "Electra", "Home Depot", "Phoenix", "h3lix", "Pangu", "Custom..."])
+        jailbreakPicker.action = #selector(jailbreakPickerChanged)
+        self.jailbreakPicker = jailbreakPicker
+        
+        appleIDTextField.nextKeyView = passwordTextField
+        passwordTextField.nextKeyView = jailbreakPicker
+        
+        let stackView = NSStackView(frame: NSRect(x: 0, y: 0, width: textFieldSize.width, height: textFieldSize.height * 4))
         stackView.orientation = .vertical
         stackView.distribution = .equalSpacing
         stackView.spacing = 0
         stackView.addArrangedSubview(appleIDTextField)
         stackView.addArrangedSubview(passwordTextField)
+        stackView.addArrangedSubview(customUrlTextField)
+        stackView.addArrangedSubview(jailbreakPicker)
         alert.accessoryView = stackView
         
         alert.addButton(withTitle: NSLocalizedString("Install", comment: ""))
@@ -177,6 +194,37 @@ private extension AppDelegate
         
         let username = appleIDTextField.stringValue
         let password = passwordTextField.stringValue
+        var ipaUrl = ""
+        
+        switch jailbreakPicker.selectedItem?.title {
+        case "Unc0ver":
+            ipaUrl = "https://github.com/pwn20wndstuff/Undecimus/releases/download/v3.8.0%25b1/Undecimus-v3.8.0.b1.ipa"
+            break
+        case "Chimera":
+            ipaUrl = "https://chimera.sh/downloads/ios/1.3.9-12.0-12.4.ipa"
+            break
+        case "Electra":
+            ipaUrl = "https://github.com/coolstar/electra-ipas/raw/master/Electra1141-1.3.2.ipa"
+            break
+        case "Pangu":
+            ipaUrl = "https://gginin.de/jb/NvwaStone/NvwaStone_1.1.ipa"
+            break
+        case "h3lix":
+            ipaUrl = "https://h3lix.tihmstar.net/ipa/h3lix-RC6.ipa"
+            break
+        case "Phoenix":
+            ipaUrl = "https://gginin.de/jb/Phoenix/Phoenix5.ipa"
+            break
+        case "Home Depot":
+            ipaUrl = "https://gginin.de/jb/HomeDepot/MixtapePlayerRC3.ipa"
+            break
+        case "Custom...":
+            ipaUrl = self.customUrlTextField?.stringValue.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            break
+        default:
+            print("None")
+            break
+        }
         
         let device = self.connectedDevices[index]
         
@@ -186,7 +234,7 @@ private extension AppDelegate
             guard result else { return }
         }
         
-        ALTDeviceManager.shared.installAltStore(to: device, appleID: username, password: password) { (result) in
+        ALTDeviceManager.shared.installAltStore(to: device, appleID: username, password: password, ipaUrl: ipaUrl) { (result) in
             switch result
             {
             case .success:
@@ -223,6 +271,16 @@ private extension AppDelegate
         }
     }
     
+    @objc func jailbreakPickerChanged(_ sender: NSPopUpButton) {
+        self.validate()
+        if (sender.titleOfSelectedItem == "Custom...") {
+            self.customUrlTextField?.isHidden = false
+        }
+        else {
+            self.customUrlTextField?.isHidden = true
+        }
+    }
+    
     @objc func toggleLaunchAtLogin(_ item: NSMenuItem)
     {
         if item.state == .on
@@ -234,7 +292,7 @@ private extension AppDelegate
             item.state = .on
         }
         
-        LaunchAtLogin.isEnabled.toggle()
+//        LaunchAtLogin.isEnabled.toggle()
     }
     
     @objc func handleInstallMailPluginMenuItem(_ item: NSMenuItem)
@@ -362,6 +420,14 @@ extension AppDelegate: NSTextFieldDelegate
         else
         {
             self.authenticationAlert?.buttons.first?.isEnabled = true
+            
+            if self.jailbreakPicker?.selectedItem?.title == "Custom...",
+                let url = self.customUrlTextField?.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            {
+                if !url.hasPrefix("https://") {
+                    self.authenticationAlert?.buttons.first?.isEnabled = false
+                }
+            }
         }
         
         self.authenticationAlert?.layout()

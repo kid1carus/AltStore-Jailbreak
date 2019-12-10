@@ -43,8 +43,6 @@
 		BF41B808233433C100C593A3 /* LoadingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF41B807233433C100C593A3 /* LoadingState.swift */; };
 		BF43002E22A714AF0051E2BC /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43002D22A714AF0051E2BC /* Keychain.swift */; };
 		BF43003022A71C960051E2BC /* UserDefaults+AltStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43002F22A71C960051E2BC /* UserDefaults+AltStore.swift */; };
-		BF44CC6C232AEB90004DA9C3 /* LaunchAtLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */; };
-		BF44CC6D232AEB90004DA9C3 /* LaunchAtLogin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BF44CC6A232AEB74004DA9C3 /* LaunchAtLogin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BF458690229872EA00BD7491 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF45868F229872EA00BD7491 /* AppDelegate.swift */; };
 		BF458694229872EA00BD7491 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF458693229872EA00BD7491 /* Assets.xcassets */; };
 		BF458697229872EA00BD7491 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF458695229872EA00BD7491 /* Main.storyboard */; };
@@ -269,7 +267,6 @@
 			files = (
 				BF0201BB22C2EFA3000B93E4 /* AltSign.framework in Embed Frameworks */,
 				BF0201BE22C2EFBC000B93E4 /* openssl.framework in Embed Frameworks */,
-				BF44CC6D232AEB90004DA9C3 /* LaunchAtLogin.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -569,7 +566,6 @@
 			files = (
 				BF1E315F22A0635900370A3C /* libAltKit.a in Frameworks */,
 				BF4588882298DD3F00BD7491 /* libxml2.tbd in Frameworks */,
-				BF44CC6C232AEB90004DA9C3 /* LaunchAtLogin.framework in Frameworks */,
 				BF4588472298D4B000BD7491 /* libimobiledevice.a in Frameworks */,
 				BF0201BD22C2EFBC000B93E4 /* openssl.framework in Frameworks */,
 				BF0201BA22C2EFA3000B93E4 /* AltSign.framework in Frameworks */,
@@ -1222,7 +1218,6 @@
 				BF45868B229872EA00BD7491 /* Resources */,
 				BF4588462298D4AA00BD7491 /* Frameworks */,
 				BF0201BC22C2EFA3000B93E4 /* Embed Frameworks */,
-				BF7FDA2C23203B6B00B5D3A4 /* Copy Launcher App */,
 				98BF22D155DBAEA97544E3E6 /* [CP] Embed Pods Frameworks */,
 				BF914C242383659400E713BA /* Sign Frameworks */,
 			);
@@ -1453,24 +1448,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AltStore/Pods-AltStore-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		BF7FDA2C23203B6B00B5D3A4 /* Copy Launcher App */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Launcher App";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}/Carthage/Build/Mac/LaunchAtLogin.framework/Resources/copy-helper.sh\"\n";
 		};
 		BF914C242383659400E713BA /* Sign Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1778,7 +1755,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1795,7 +1772,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6XVY5G3U44;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1813,9 +1790,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = AltServer/AltServer.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = Q6F5UHP863;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1846,10 +1823,11 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "AltServer/AltServer-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1865,9 +1843,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = AltServer/AltServer.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 6XVY5G3U44;
+				DEVELOPMENT_TEAM = Q6F5UHP863;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1898,10 +1876,11 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rileytestut.AltServer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "AltServer/AltServer-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

@@ -10,11 +10,11 @@ import Cocoa
 import UserNotifications
 import ObjectiveC
 
-#if STAGING
-private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altstore.ipa")!
-#else
-private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore.ipa")!
-#endif
+//#if STAGING
+//private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore-staging/altstore.ipa")!
+//#else
+//private let appURL = URL(string: "https://f000.backblazeb2.com/file/altstore/altstore.ipa")!
+//#endif
 
 enum InstallError: LocalizedError
 {
@@ -36,8 +36,9 @@ enum InstallError: LocalizedError
 
 extension ALTDeviceManager
 {
-    func installAltStore(to device: ALTDevice, appleID: String, password: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func installAltStore(to device: ALTDevice, appleID: String, password: String, ipaUrl: String, completion: @escaping (Result<Void, Error>) -> Void)
     {
+        self.ipaUrl = ipaUrl
         let destinationDirectoryURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         
         func finish(_ error: Error?, title: String = "")
@@ -185,7 +186,7 @@ extension ALTDeviceManager
     
     func downloadApp(completionHandler: @escaping (Result<URL, Error>) -> Void)
     {
-        let downloadTask = URLSession.shared.downloadTask(with: appURL) { (fileURL, response, error) in
+        let downloadTask = URLSession.shared.downloadTask(with: URL(string: self.ipaUrl)!) { (fileURL, response, error) in
             do
             {
                 let (fileURL, _) = try Result((fileURL, response), error).get()
